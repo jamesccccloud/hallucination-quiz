@@ -1,0 +1,1436 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 幻覺偵測測驗｜你是哪種動物？</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Readex+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream: #faf7f2;
+  --warm-white: #fff9f4;
+  --ink: #1c1a17;
+  --ink2: #5c5750;
+  --ink3: #9c978f;
+  --border: #e8e2d9;
+  --border2: #d4cdc2;
+  --accent: #e8643c;
+  --accent2: #f0a050;
+  --accent3: #4a9e8a;
+  --accent4: #7b5ea7;
+  --easy-clr: #4a9e8a;
+  --easy-bg: #eef7f5;
+  --normal-clr: #3a7bc8;
+  --normal-bg: #eef3fb;
+  --hard-clr: #e07830;
+  --hard-bg: #fef3eb;
+  --hell-clr: #c83a3a;
+  --hell-bg: #fef0f0;
+  --radius: 16px;
+  --radius-lg: 24px;
+  --shadow: 0 2px 12px rgba(28,26,23,0.08);
+  --shadow-lg: 0 8px 32px rgba(28,26,23,0.12);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--cream);
+  color: var(--ink);
+  font-family: 'Noto Sans TC', sans-serif;
+  font-size: 15px;
+  line-height: 1.7;
+  min-height: 100vh;
+}
+
+/* ── HEADER ── */
+.hdr {
+  background: var(--warm-white);
+  border-bottom: 1px solid var(--border);
+  padding: 0 28px;
+  height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 1px 0 var(--border);
+}
+.hdr-logo {
+  font-family: 'Readex Pro', sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.hdr-logo-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.hdr-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.hdr-score {
+  font-family: 'Readex Pro', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent);
+  background: #fff3ee;
+  border: 1.5px solid #fad4c4;
+  border-radius: 20px;
+  padding: 4px 14px;
+  display: none;
+}
+.hdr-progress {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--ink3);
+}
+.hdr-prog-bar {
+  width: 120px;
+  height: 5px;
+  background: var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.hdr-prog-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  border-radius: 3px;
+  transition: width .5s cubic-bezier(.4,0,.2,1);
+}
+
+/* ── SCREENS ── */
+.screen { display: none; }
+.screen.active { display: block; }
+
+/* ── INTRO ── */
+.intro {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 48px 24px 80px;
+}
+.intro-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #fff3ee;
+  border: 1.5px solid #fad4c4;
+  border-radius: 20px;
+  padding: 5px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent);
+  margin-bottom: 24px;
+  letter-spacing: .04em;
+}
+.intro-animal-row {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  margin-bottom: 28px;
+  font-size: 40px;
+  animation: floatIn .6s ease;
+}
+@keyframes floatIn { from { opacity:0; transform:translateY(-12px);} to { opacity:1; transform:translateY(0);} }
+
+.intro-title {
+  font-family: 'Readex Pro', sans-serif;
+  font-size: 34px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -.02em;
+  margin-bottom: 8px;
+  text-align: center;
+}
+.intro-title .hi { color: var(--accent); }
+.intro-sub {
+  text-align: center;
+  font-size: 16px;
+  color: var(--ink2);
+  margin-bottom: 36px;
+  line-height: 1.8;
+}
+
+.intro-card {
+  background: var(--warm-white);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow);
+}
+.intro-card-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink3);
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  margin-bottom: 18px;
+}
+
+.scoring-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-bottom: 6px;
+}
+.score-tier {
+  border-radius: 12px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.score-tier-icon { font-size: 20px; }
+.score-tier-info {}
+.score-tier-name { font-size: 13px; font-weight: 600; }
+.score-tier-pts  { font-size: 11px; margin-top: 1px; }
+
+.type-list { display: flex; flex-direction: column; gap: 10px; }
+.type-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background: var(--cream);
+  border-radius: 10px;
+}
+.type-icon-box {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.type-row-title { font-size: 13px; font-weight: 600; }
+.type-row-desc  { font-size: 12px; color: var(--ink3); }
+
+.animal-preview {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+}
+.ap-item {
+  background: var(--cream);
+  border-radius: 12px;
+  padding: 12px 6px;
+  text-align: center;
+}
+.ap-emoji { font-size: 24px; display: block; margin-bottom: 4px; }
+.ap-range { font-size: 10px; color: var(--ink3); font-weight: 600; }
+.ap-name  { font-size: 11px; font-weight: 700; color: var(--ink2); margin-top: 2px; }
+
+.btn-start {
+  width: 100%;
+  padding: 16px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 17px;
+  font-weight: 700;
+  font-family: 'Readex Pro', sans-serif;
+  cursor: pointer;
+  letter-spacing: .02em;
+  transition: all .2s;
+  box-shadow: 0 4px 16px rgba(232,100,60,.35);
+}
+.btn-start:hover { background: #d45530; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(232,100,60,.4); }
+.btn-start:active { transform: translateY(0); }
+
+/* ── QUIZ ── */
+.quiz-wrap {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 32px 24px 80px;
+}
+
+.diff-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  border: 1.5px solid;
+}
+.diff-easy   { background: var(--easy-bg);   color: var(--easy-clr);   border-color: #b0ddd6; }
+.diff-normal { background: var(--normal-bg);  color: var(--normal-clr); border-color: #b0c8e8; }
+.diff-hard   { background: var(--hard-bg);    color: var(--hard-clr);   border-color: #f0c090; }
+.diff-hell   { background: var(--hell-bg);    color: var(--hell-clr);   border-color: #f0a0a0; }
+
+.theme-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  background: var(--border);
+  color: var(--ink3);
+}
+
+.q-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.q-counter {
+  font-size: 12px;
+  color: var(--ink3);
+  font-family: 'Readex Pro', sans-serif;
+  font-weight: 600;
+  margin-left: auto;
+}
+
+.q-card {
+  background: var(--warm-white);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  margin-bottom: 16px;
+  animation: cardIn .3s cubic-bezier(.4,0,.2,1);
+}
+@keyframes cardIn { from { opacity:0; transform:translateY(10px) scale(.99);} to { opacity:1; transform:none; } }
+
+.q-body { padding: 24px 24px 20px; }
+.q-context-lbl {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--ink3);
+  margin-bottom: 8px;
+  display: block;
+}
+.q-stem {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.65;
+  color: var(--ink);
+  margin-bottom: 14px;
+}
+.q-question {
+  font-size: 15px;
+  color: var(--ink);
+  font-weight: 600;
+  margin-top: 14px;
+}
+
+.ai-quote {
+  background: #f5f2ee;
+  border-left: 3px solid var(--border2);
+  border-radius: 0 10px 10px 0;
+  padding: 14px 16px;
+  margin: 12px 0;
+}
+.ai-quote-lbl {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--ink3);
+  margin-bottom: 6px;
+}
+.ai-quote-text {
+  font-size: 13px;
+  line-height: 1.8;
+  color: var(--ink2);
+  font-family: 'Noto Sans TC', sans-serif;
+}
+
+/* Options */
+.opts { padding: 0 24px 20px; display: flex; flex-direction: column; gap: 8px; }
+.opt {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 13px 16px;
+  border-radius: 12px;
+  border: 1.5px solid var(--border);
+  cursor: pointer;
+  transition: all .15s;
+  font-size: 14px;
+  line-height: 1.6;
+  background: var(--warm-white);
+  position: relative;
+}
+.opt:hover:not(.locked) { border-color: var(--accent); background: #fff9f7; transform: translateX(2px); }
+.opt.sel    { border-color: var(--accent); background: #fff3ee; }
+.opt.correct { border-color: var(--easy-clr); background: var(--easy-bg); }
+.opt.wrong   { border-color: var(--hell-clr); background: var(--hell-bg); }
+.opt.show    { border-color: var(--easy-clr); background: var(--easy-bg); opacity: .8; }
+.opt-letter {
+  width: 22px; height: 22px;
+  border-radius: 6px;
+  background: var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ink3);
+  flex-shrink: 0;
+  margin-top: 1px;
+  transition: all .15s;
+}
+.opt.sel .opt-letter { background: var(--accent); color: #fff; }
+.opt.correct .opt-letter { background: var(--easy-clr); color: #fff; }
+.opt.wrong .opt-letter   { background: var(--hell-clr); color: #fff; }
+.opt-result-icon { margin-left: auto; font-size: 16px; flex-shrink: 0; }
+
+/* Compare */
+.compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 0 24px 20px; }
+@media (max-width: 580px) { .compare-grid { grid-template-columns: 1fr; } }
+.cmp {
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all .2s;
+  background: var(--warm-white);
+}
+.cmp:hover:not(.locked) { border-color: var(--accent); box-shadow: 0 4px 16px rgba(232,100,60,.15); transform: translateY(-2px); }
+.cmp.sel     { border-color: var(--accent); box-shadow: 0 4px 16px rgba(232,100,60,.2); }
+.cmp.correct { border-color: var(--easy-clr); background: var(--easy-bg); }
+.cmp.wrong   { border-color: var(--hell-clr); background: var(--hell-bg); }
+.cmp.show    { border-color: var(--easy-clr); background: var(--easy-bg); opacity: .8; }
+.cmp-head {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ink3);
+  letter-spacing: .06em;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.cmp-body { padding: 14px; font-size: 13px; line-height: 1.75; color: var(--ink2); }
+
+/* Dissect / sentences */
+.sents { padding: 0 24px 20px; display: flex; flex-direction: column; gap: 7px; }
+.sent {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 11px 14px;
+  border-radius: 12px;
+  border: 1.5px solid var(--border);
+  cursor: pointer;
+  transition: all .15s;
+  font-size: 13.5px;
+  line-height: 1.65;
+  background: var(--warm-white);
+}
+.sent:hover:not(.locked) { border-color: var(--accent2); background: #fff9f0; }
+.sent.sel     { border-color: var(--accent2); background: #fff6e8; }
+.sent.correct { border-color: var(--easy-clr); background: var(--easy-bg); }
+.sent.wrong   { border-color: var(--hell-clr); background: var(--hell-bg); }
+.sent.missed  { border-color: var(--hell-clr); background: var(--hell-bg); }
+.sent.safe    { border-color: var(--border); background: var(--cream); opacity: .7; }
+.sent-num {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ink3);
+  min-width: 18px;
+  margin-top: 2px;
+  font-family: 'Readex Pro', sans-serif;
+}
+.sent-icon { margin-left: auto; font-size: 14px; flex-shrink: 0; }
+
+/* Submit btn */
+.q-footer { padding: 0 24px 22px; }
+.btn-submit {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 24px;
+  background: var(--ink);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: 'Noto Sans TC', sans-serif;
+  cursor: pointer;
+  transition: all .15s;
+}
+.btn-submit:hover { background: #3a3530; }
+.btn-submit:disabled { opacity: .3; cursor: not-allowed; }
+
+/* Explanation */
+.exp-card {
+  border-radius: var(--radius-lg);
+  padding: 22px 24px;
+  margin-bottom: 14px;
+  border: 1.5px solid;
+  animation: cardIn .25s ease;
+}
+.exp-correct { background: var(--easy-bg);   border-color: #b0ddd6; }
+.exp-wrong   { background: var(--hell-bg);   border-color: #f0a0a0; }
+.exp-partial { background: var(--hard-bg);   border-color: #f0c090; }
+.exp-header  { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+.exp-emoji   { font-size: 22px; }
+.exp-title   { font-size: 15px; font-weight: 700; }
+.exp-pts     { margin-left: auto; font-size: 12px; font-weight: 700; color: var(--accent); background: #fff; padding: 3px 10px; border-radius: 10px; border: 1.5px solid #fad4c4; }
+.exp-body    { font-size: 14px; line-height: 1.8; color: var(--ink2); }
+.exp-body strong { color: var(--ink); font-weight: 600; }
+.exp-tip {
+  margin-top: 12px;
+  padding: 10px 14px;
+  background: rgba(255,255,255,.7);
+  border-radius: 10px;
+  font-size: 13px;
+  color: var(--ink2);
+  line-height: 1.7;
+  border-left: 3px solid var(--accent2);
+}
+.exp-tip strong { color: var(--ink); }
+
+.btn-next {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 13px 28px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 14px;
+  font-size: 15px;
+  font-weight: 700;
+  font-family: 'Readex Pro', sans-serif;
+  cursor: pointer;
+  transition: all .2s;
+  box-shadow: 0 4px 14px rgba(232,100,60,.3);
+}
+.btn-next:hover { background: #d45530; transform: translateY(-1px); }
+
+/* ── RESULT ── */
+.result-wrap {
+  max-width: 580px;
+  margin: 0 auto;
+  padding: 48px 24px 80px;
+  text-align: center;
+}
+
+.result-confetti {
+  font-size: 48px;
+  margin-bottom: 8px;
+  animation: popIn .5s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes popIn { from { opacity:0; transform:scale(.4); } to { opacity:1; transform:scale(1); } }
+
+.result-animal-name {
+  font-family: 'Readex Pro', sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 6px;
+  letter-spacing: -.01em;
+}
+.result-animal-desc {
+  font-size: 15px;
+  color: var(--ink2);
+  line-height: 1.8;
+  margin-bottom: 28px;
+}
+
+.result-score-card {
+  background: var(--warm-white);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  box-shadow: var(--shadow-lg);
+  margin-bottom: 20px;
+}
+.result-score-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+.result-score-big {
+  font-family: 'Readex Pro', sans-serif;
+  font-size: 72px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--accent);
+}
+.result-score-slash { font-size: 28px; color: var(--border2); font-family: 'Readex Pro', sans-serif; }
+.result-score-max { font-size: 28px; color: var(--ink3); font-family: 'Readex Pro', sans-serif; font-weight: 600; }
+
+.score-bar-bg {
+  width: 100%;
+  height: 10px;
+  background: var(--border);
+  border-radius: 5px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+.score-bar-fill {
+  height: 100%;
+  border-radius: 5px;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  transition: width 1.2s cubic-bezier(.4,0,.2,1);
+}
+
+.result-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+.rstat {
+  background: var(--cream);
+  border-radius: 12px;
+  padding: 14px 10px;
+}
+.rstat-val { font-family: 'Readex Pro', sans-serif; font-size: 24px; font-weight: 700; color: var(--ink); }
+.rstat-lbl { font-size: 11px; color: var(--ink3); margin-top: 2px; }
+
+.levels-strip {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+  margin-bottom: 20px;
+}
+.lv-item {
+  border-radius: 12px;
+  padding: 12px 6px;
+  text-align: center;
+  border: 1.5px solid var(--border);
+  background: var(--warm-white);
+  transition: all .2s;
+}
+.lv-item.active {
+  border-color: var(--accent);
+  background: #fff3ee;
+  box-shadow: 0 4px 12px rgba(232,100,60,.2);
+  transform: scale(1.04);
+}
+.lv-emoji { font-size: 22px; display: block; margin-bottom: 4px; }
+.lv-range { font-size: 10px; color: var(--ink3); font-weight: 600; }
+.lv-name  { font-size: 10px; font-weight: 700; color: var(--ink2); margin-top: 2px; line-height: 1.3; }
+
+.takeaway-card {
+  background: var(--warm-white);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 22px 24px;
+  margin-bottom: 24px;
+  text-align: left;
+}
+.takeaway-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink3);
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  margin-bottom: 14px;
+}
+.tw-item {
+  display: flex;
+  gap: 10px;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--ink2);
+  margin-bottom: 10px;
+}
+.tw-item:last-child { margin-bottom: 0; }
+.tw-arrow { color: var(--accent); font-weight: 700; flex-shrink: 0; margin-top: 2px; }
+
+.btn-restart {
+  width: 100%;
+  padding: 15px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 16px;
+  font-weight: 700;
+  font-family: 'Readex Pro', sans-serif;
+  cursor: pointer;
+  letter-spacing: .02em;
+  transition: all .2s;
+  box-shadow: 0 4px 16px rgba(232,100,60,.35);
+}
+.btn-restart:hover { background: #d45530; transform: translateY(-2px); }
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <div class="hdr-logo">
+    <div class="hdr-logo-dot"></div>
+    AI 幻覺偵測測驗
+  </div>
+  <div class="hdr-right">
+    <div class="hdr-progress" id="hdrProgress">
+      <div class="hdr-prog-bar"><div class="hdr-prog-fill" id="hdrFill" style="width:0%"></div></div>
+      <span id="hdrLabel" style="font-size:12px;color:var(--ink3)">0/30</span>
+    </div>
+    <div class="hdr-score" id="hdrScore">得分 0</div>
+  </div>
+</header>
+
+<!-- ══ INTRO ══ -->
+<div class="screen active" id="screen-intro">
+  <div class="intro">
+    <div style="text-align:center">
+      <div class="intro-badge">🧠 行銷部 AI 識讀訓練</div>
+      <div class="intro-animal-row">🦉 🦁 🦅 🐬 🐢</div>
+      <h1 class="intro-title">你是<span class="hi">哪種動物</span>？</h1>
+      <p class="intro-sub">AI 一本正經說錯話，你能識破幾題？<br>30 道真實行銷情境，測出你的 AI 判讀等級</p>
+    </div>
+
+    <div class="intro-card">
+      <div class="intro-card-title">🎯 題目難度與計分</div>
+      <div class="scoring-grid">
+        <div class="score-tier" style="background:var(--easy-bg)">
+          <span class="score-tier-icon">🌱</span>
+          <div>
+            <div class="score-tier-name" style="color:var(--easy-clr)">簡單</div>
+            <div class="score-tier-pts" style="color:var(--easy-clr)">各 1 分 × 10 題</div>
+          </div>
+        </div>
+        <div class="score-tier" style="background:var(--normal-bg)">
+          <span class="score-tier-icon">⚡</span>
+          <div>
+            <div class="score-tier-name" style="color:var(--normal-clr)">普通</div>
+            <div class="score-tier-pts" style="color:var(--normal-clr)">各 2 分 × 10 題</div>
+          </div>
+        </div>
+        <div class="score-tier" style="background:var(--hard-bg)">
+          <span class="score-tier-icon">🔥</span>
+          <div>
+            <div class="score-tier-name" style="color:var(--hard-clr)">困難</div>
+            <div class="score-tier-pts" style="color:var(--hard-clr)">各 4 分 × 7 題</div>
+          </div>
+        </div>
+        <div class="score-tier" style="background:var(--hell-bg)">
+          <span class="score-tier-icon">💀</span>
+          <div>
+            <div class="score-tier-name" style="color:var(--hell-clr)">地獄</div>
+            <div class="score-tier-pts" style="color:var(--hell-clr)">各 5 分 × 3 題</div>
+          </div>
+        </div>
+      </div>
+      <div style="text-align:center;font-size:12px;color:var(--ink3);margin-top:10px">滿分 73 分，換算成 100 分制呈現</div>
+    </div>
+
+    <div class="intro-card">
+      <div class="intro-card-title">📝 三種題型</div>
+      <div class="type-list">
+        <div class="type-row">
+          <div class="type-icon-box" style="background:#fff3ee">🔍</div>
+          <div><div class="type-row-title">偵錯型</div><div class="type-row-desc">讀 AI 回應，選出哪裡有問題</div></div>
+        </div>
+        <div class="type-row">
+          <div class="type-icon-box" style="background:#eef7f5">⚖️</div>
+          <div><div class="type-row-title">比較型</div><div class="type-row-desc">兩個 AI 回應，選出比較可信的那個</div></div>
+        </div>
+        <div class="type-row">
+          <div class="type-icon-box" style="background:#f3f0ff">🏷️</div>
+          <div><div class="type-row-title">拆解型</div><div class="type-row-desc">逐句標出哪些句子有風險（可複選）</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="intro-card">
+      <div class="intro-card-title">🐾 你會得到哪種動物？</div>
+      <div class="animal-preview">
+        <div class="ap-item"><span class="ap-emoji">🐢</span><span class="ap-range">0–20</span><div class="ap-name">謹慎之龜</div></div>
+        <div class="ap-item"><span class="ap-emoji">🦊</span><span class="ap-range">21–40</span><div class="ap-name">機靈之狐</div></div>
+        <div class="ap-item"><span class="ap-emoji">🐬</span><span class="ap-range">41–60</span><div class="ap-name">敏捷之豚</div></div>
+        <div class="ap-item"><span class="ap-emoji">🦁</span><span class="ap-range">61–80</span><div class="ap-name">洞察獅王</div></div>
+        <div class="ap-item"><span class="ap-emoji">🦅</span><span class="ap-range">81–100</span><div class="ap-name">透視之鷹</div></div>
+      </div>
+    </div>
+
+    <button class="btn-start" onclick="startQuiz()">開始測驗，找出你的動物 →</button>
+  </div>
+</div>
+
+<!-- ══ QUIZ ══ -->
+<div class="screen" id="screen-quiz">
+  <div class="quiz-wrap" id="quizWrap"></div>
+</div>
+
+<!-- ══ RESULT ══ -->
+<div class="screen" id="screen-result">
+  <div class="result-wrap">
+    <div class="result-confetti" id="rAnimalEmoji">🦅</div>
+    <div class="result-animal-name" id="rAnimalName">透視之鷹</div>
+    <div class="result-animal-desc" id="rAnimalDesc">你的洞察力令人驚嘆！</div>
+
+    <div class="result-score-card">
+      <div class="result-score-row">
+        <div class="result-score-big" id="rScoreDisplay">0</div>
+        <div>
+          <div class="result-score-slash">/</div>
+        </div>
+        <div class="result-score-max">100</div>
+      </div>
+      <div class="score-bar-bg"><div class="score-bar-fill" id="rBar" style="width:0%"></div></div>
+      <div class="result-stats">
+        <div class="rstat"><div class="rstat-val" id="rCorrect">0</div><div class="rstat-lbl">答對題數</div></div>
+        <div class="rstat"><div class="rstat-val" id="rRawScore">0</div><div class="rstat-lbl">原始得分</div></div>
+        <div class="rstat"><div class="rstat-val" id="rRate">0%</div><div class="rstat-lbl">正確率</div></div>
+      </div>
+    </div>
+
+    <div class="levels-strip" id="levelsStrip">
+      <div class="lv-item" id="lv0"><span class="lv-emoji">🐢</span><span class="lv-range">0–20</span><div class="lv-name">謹慎之龜</div></div>
+      <div class="lv-item" id="lv1"><span class="lv-emoji">🦊</span><span class="lv-range">21–40</span><div class="lv-name">機靈之狐</div></div>
+      <div class="lv-item" id="lv2"><span class="lv-emoji">🐬</span><span class="lv-range">41–60</span><div class="lv-name">敏捷之豚</div></div>
+      <div class="lv-item" id="lv3"><span class="lv-emoji">🦁</span><span class="lv-range">61–80</span><div class="lv-name">洞察獅王</div></div>
+      <div class="lv-item" id="lv4"><span class="lv-emoji">🦅</span><span class="lv-range">81–100</span><div class="lv-name">透視之鷹</div></div>
+    </div>
+
+    <div class="takeaway-card">
+      <div class="takeaway-title">🎓 三個帶走的核心觀念</div>
+      <div class="tw-item"><span class="tw-arrow">→</span><span>AI 的數字、法條、人名，說得越有自信，越要交叉驗證</span></div>
+      <div class="tw-item"><span class="tw-arrow">→</span><span>「建議查最新規定」比直接給確切數字，反而是更誠實的 AI</span></div>
+      <div class="tw-item"><span class="tw-arrow">→</span><span>AI 是寫作工具，不是事實保證機器——「用 AI 寫」≠「內容正確」</span></div>
+    </div>
+
+    <button class="btn-restart" onclick="restartQuiz()">再測一次，挑戰更高等級 🔄</button>
+  </div>
+</div>
+
+<script>
+// ── QUESTIONS DATA ──
+const QUESTIONS = [
+  // ══ 簡單 (1分) × 10 ══
+  {id:1,diff:'easy',pts:1,theme:'hr',type:'detect',
+   stem:'你請 AI 說明台灣勞基法加班費規定，它回答：',
+   aiQuote:'延長工時的第 1 至 2 小時，按平日每小時工資額加給三分之一；超過 2 小時後，每小時加給三分之二。國定假日出勤則依各公司規定辦理，法律無強制要求。',
+   question:'哪個說法有問題？',
+   options:[
+     {text:'第 1-2 小時加給三分之一',correct:false},
+     {text:'超過 2 小時加給三分之二',correct:false},
+     {text:'國定假日出勤「依公司規定、法律無強制要求」',correct:true},
+     {text:'加班費的計算以每小時工資為基礎',correct:false}
+   ],
+   explanation:'國定假日出勤並非「依公司規定」——勞基法明定國定假日出勤應<strong>加倍給付工資</strong>。這個說法若放進員工手冊，會讓公司面臨勞資糾紛。',
+   tip:'法規相關說法，「法律無強制要求」這類說法要特別小心，通常是 AI 在填補它不確定的地方。'},
+
+  {id:2,diff:'easy',pts:1,theme:'mkt',type:'compare',
+   stem:'你詢問 AI 關於 TikTok 在台灣的用戶數：',
+   question:'哪個回應比較值得信任？',
+   optionA:{label:'AI 回應 A',text:'TikTok 在台灣的月活躍用戶為 620 萬人，在 18-34 歲族群滲透率達 71%，平均每日使用時間 52 分鐘。'},
+   optionB:{label:'AI 回應 B',text:'關於 TikTok 台灣用戶的精確數字，我沒有可靠的最新官方數據。建議參考 DataReportal 的《Digital Taiwan》年度報告，或 TikTok for Business 的媒體資料頁面。'},
+   correct:'B',
+   explanation:'A 給了一組精確數字（620 萬、71%、52 分鐘）卻沒有來源。<strong>越精確的數字越要懷疑</strong>——AI 傾向用精確感製造可信度。B 坦承沒有可靠資料並給了真實查核管道，這才是負責任的回應。',
+   tip:'「根據最新統計」這句話沒有說明是誰做的統計，這種歸因方式是幻覺的標準格式。'},
+
+  {id:3,diff:'easy',pts:1,theme:'prod',type:'detect',
+   stem:'行銷部要寫 FAQ，問 AI「我們的產品支援哪些認證？」',
+   aiQuote:'本產品符合 ISO 27001、SOC 2 Type II、台灣個資法所有要求，以及 PCI DSS 支付卡產業標準。',
+   question:'這個回應的根本問題是什麼？',
+   options:[
+     {text:'認證項目列太多了',correct:false},
+     {text:'AI 不知道你們公司實際有哪些認證，這是捏造的清單',correct:true},
+     {text:'GDPR 沒有列入',correct:false},
+     {text:'PCI DSS 描述不夠詳細',correct:false}
+   ],
+   explanation:'AI 根本不知道你的公司實際擁有哪些認證，它給的是「典型 SaaS 公司可能有的認證清單」。若直接放進 FAQ，等於對外聲稱擁有<strong>可能根本沒有取得</strong>的認證，這是廣告不實。',
+   tip:'認證、合規聲明——每一項都需要法遵或工程部門書面確認，不能用 AI 自行填寫。'},
+
+  {id:4,diff:'easy',pts:1,theme:'mkt',type:'detect',
+   stem:'同事說「AI 幫我查到，我們品牌在業界聲量排第三，每月 Twitter 提及 8,200 次。」',
+   aiQuote:'根據社群聆聽數據，您的品牌聲量在業界排名第 3，每月 Twitter 提及次數 8,200 次，競品 A 為 12,400 次。',
+   question:'這段回應的根本問題是什麼？',
+   options:[
+     {text:'排名方式不夠透明',correct:false},
+     {text:'AI 沒有連接社群聆聽工具，這些數字是幻覺',correct:true},
+     {text:'Twitter 在台灣用戶少，不是好指標',correct:false},
+     {text:'競品數字需要更多來源佐證',correct:false}
+   ],
+   explanation:'除非你明確串接了社群聆聽工具（如 Brandwatch），否則 AI<strong>根本沒辦法查詢即時社群數據</strong>。這些數字全部是 AI 根據你的問題捏造出來的「查詢結果」。',
+   tip:'即時數據（社群聲量、廣告表現）需要真實工具才能取得。問 AI 這類問題，它只會給你幻覺數字。'},
+
+  {id:5,diff:'easy',pts:1,theme:'hr',type:'compare',
+   stem:'你想了解台灣「試用期」的規定：',
+   question:'哪個回應比較正確？',
+   optionA:{label:'AI 回應 A',text:'台灣勞基法明定試用期最長為 3 個月，試用期間雇主可隨時終止勞動契約且無需給付資遣費。試用期薪資可低於基本工資。'},
+   optionB:{label:'AI 回應 B',text:'台灣勞基法目前並未明文規定試用期的最長期限。試用期員工仍受勞基法保護，薪資不得低於基本工資；若要終止契約，依年資可能仍有預告期及資遣費義務，建議洽詢勞工局確認。'},
+   correct:'B',
+   explanation:'A 有兩個明顯錯誤：①勞基法<strong>並未規定試用期上限為 3 個月</strong>；②試用期薪資<strong>不得低於基本工資</strong>。B 正確指出法律無明確規定，並提醒雇主仍有義務。',
+   tip:'當一個 AI 說「法律規定是 X」而另一個說「法律沒有明確規定」，通常後者更可信——AI 傾向過度自信地捏造細節。'},
+
+  {id:6,diff:'easy',pts:1,theme:'prod',type:'detect',
+   stem:'行銷部請 AI 寫產品的 LinkedIn 貼文草稿：',
+   aiQuote:'🚀 重磅更新！我們的 AI 分析引擎可在 3 秒內處理 100 萬筆資料，準確率高達 99.2%——業界最頂尖的表現，正式超越市場上 95% 的競品，成為台灣數據分析領域第一名！',
+   question:'這段文案有什麼行銷法規風險？',
+   options:[
+     {text:'語氣太誇張，不適合 LinkedIn',correct:false},
+     {text:'「第一名」、「超越 95% 競品」是比較性廣告，需要可查核的數據依據',correct:true},
+     {text:'應該加上 hashtag',correct:false},
+     {text:'沒有附上功能連結',correct:false}
+   ],
+   explanation:'「業界最頂尖」、「超越 95% 競品」、「第一名」這類<strong>最高級或比較性陳述</strong>，依公平交易委員會廣告規範，必須有可查核的客觀依據。若數字是 AI 捏造的，可能違反《公平交易法》不實廣告規定。',
+   tip:'廣告文案的最高級詞和比較性數字，需要有可公開查核的數據來源，否則不能使用。'},
+
+  {id:7,diff:'easy',pts:1,theme:'mkt',type:'compare',
+   stem:'你要了解 Instagram 在台灣的廣告效益：',
+   question:'哪個回應品質比較高？',
+   optionA:{label:'AI 回應 A',text:'Instagram 在台灣的平均廣告點擊率（CTR）為 1.8%，每次點擊成本約 NT$12-18 元，轉換率約 2.3%。相較 Facebook，IG 在 18-34 歲廣告效益高出 35%。'},
+   optionB:{label:'AI 回應 B',text:'Instagram 廣告效益因產業、受眾、素材差異極大，我無法提供台灣市場均值。建議從 Meta for Business 取得產業基準，或分享你的產業別讓我幫你找更相關的參考指標。'},
+   correct:'B',
+   explanation:'A 的數字看似專業，但廣告效益高度依賴產業類別、受眾、素材、出價等，<strong>一個「台灣均值」根本不存在</strong>。B 說明了為什麼無法給均值，並指向真實資料來源。',
+   tip:'廣告效益數字要有說服力，需要同產業的 benchmark，不是泛泛的「市場平均」。'},
+
+  {id:8,diff:'easy',pts:1,theme:'prod',type:'detect',
+   stem:'行銷部請 AI 說明公司 CRM 系統的功能清單：',
+   aiQuote:'本公司 CRM 支援：客戶資料管理、銷售漏斗追蹤、AI 客戶評分、與 Salesforce 雙向同步、即時報表儀表板、iOS 和 Android 行動 App。系統回應時間低於 0.3 秒，資料備份每小時一次。',
+   question:'這段說明最大的問題是什麼？',
+   options:[
+     {text:'技術規格描述不夠專業',correct:false},
+     {text:'AI 根本不知道你們 CRM 有什麼功能，這些是捏造的',correct:true},
+     {text:'應該加上版本號碼',correct:false},
+     {text:'0.3 秒的說法太武斷',correct:false}
+   ],
+   explanation:'你公司 CRM 的真實功能，AI 完全不知道。它根據「一般 CRM 通常有什麼功能」捏造了這份清單。若對外發布，可能包含<strong>你們實際沒有的功能</strong>，引發客戶期待落差或廣告不實問題。',
+   tip:'鐵律：描述自家產品功能，必須由 PM 或工程師提供規格文件，AI 只負責潤稿，不能「推測」你的產品有什麼。'},
+
+  {id:9,diff:'easy',pts:1,theme:'hr',type:'detect',
+   stem:'你詢問 AI 台灣職場歧視的法律保護有哪些：',
+   aiQuote:'台灣禁止職場歧視的法律涵蓋：性別（性別工作平等法）、年齡（就業服務法）、身心障礙（身心障礙者權益保障法）、種族（民族平等法）、宗教（宗教自由保護法）。',
+   question:'哪個法律名稱是 AI 捏造的？',
+   options:[
+     {text:'性別工作平等法',correct:false},
+     {text:'就業服務法',correct:false},
+     {text:'民族平等法',correct:true},
+     {text:'身心障礙者權益保障法',correct:false}
+   ],
+   explanation:'「民族平等法」在台灣<strong>並不存在</strong>，這是 AI 的幻覺法條。「宗教自由保護法」也不存在（宗教自由受憲法保障，但沒有獨立的這部法）。這段回應混合了真實與捏造的法律名稱。',
+   tip:'辨識技巧：法律名稱越「直覺完整」越要懷疑。真實法律名稱有時反而不那麼一目瞭然。直接上全國法規資料庫搜尋。'},
+
+  {id:10,diff:'easy',pts:1,theme:'mkt',type:'detect',
+   stem:'行銷部同事用 AI 寫了競品調查，你看到這段：',
+   aiQuote:'競品 X 公司目前在台灣共有 4 個據點，員工數約 280 人，2023 年營收約 NT$3.8 億，較前年成長 24%，客戶留存率高達 91%。',
+   question:'這段競品資訊最大的風險是什麼？',
+   options:[
+     {text:'據點數量可能已更新',correct:false},
+     {text:'員工數是估計值，不夠精確',correct:false},
+     {text:'這些數字 AI 幾乎不可能有可靠來源，極可能是幻覺',correct:true},
+     {text:'成長率計算方式不明',correct:false}
+   ],
+   explanation:'非上市公司的財務數字（營收、留存率）並非公開資訊，AI<strong>根本沒有管道取得這些數字</strong>。這段幾乎確定是 AI 根據「合理猜測」捏造的。若用來做策略決策，後果非常嚴重。',
+   tip:'競品的非公開資訊，真實競品調查需要：官方公告、新聞報導、公開報告或付費市調服務。'},
+
+  // ══ 普通 (2分) × 10 ══
+  {id:11,diff:'normal',pts:2,theme:'hr',type:'dissect',
+   stem:'你請 AI 協助說明台灣育嬰留停的規定：',
+   aiQuote:'① 育嬰留停可申請至子女滿 3 歲，最長 2 年。② 期間可領取育嬰留停津貼，金額為投保薪資的 60%，每月最高 NT$24,000。③ 父母均可申請，可同時或輪流使用。④ 留停期間的年資照常累積，不影響退休金計算。',
+   question:'哪些句子的內容需要特別謹慎？',
+   sentences:[
+     {text:'育嬰留停可申請至子女滿 3 歲，最長 2 年。',risk:false},
+     {text:'津貼金額為投保薪資的 60%，每月最高 NT$24,000。',risk:true},
+     {text:'父母均可申請，可同時或輪流使用。',risk:false},
+     {text:'留停期間的年資照常累積，不影響退休金計算。',risk:true}
+   ],
+   explanation:'<strong>句 ②</strong>：津貼上限「NT$24,000」會隨投保薪資上限調整，且政府偶爾修法，AI 訓練資料有截止日，此數字可能已過時。<br><br><strong>句 ④</strong>：年資累積與退休金計算在留停期間的細節較複雜，「照常累積」這個說法過度簡化，需查最新規定。',
+   tip:'涉及金額上限和年資計算的說法，一定要查勞動部最新公告，不要直接使用 AI 給的數字。'},
+
+  {id:12,diff:'normal',pts:2,theme:'mkt',type:'dissect',
+   stem:'行銷主管請 AI 整理 2023 年台灣數位廣告市場概況：',
+   aiQuote:'① 2023 年台灣數位廣告市場規模約新台幣 680 億元，年成長率約 8%。② 其中社群媒體廣告占比最高，達 38%，搜尋廣告占 29%，影音廣告占 21%。③ Meta 在台灣社群廣告市場份額約 62%，Google 在搜尋廣告市場約 94%。④ TikTok 廣告在台灣的市場滲透率 2023 年突破 15%，是成長最快的平台。⑤ 程序化購買廣告在台灣的採用率為 73%，高於亞太平均的 65%。',
+   question:'哪些數字最需要額外查證？',
+   sentences:[
+     {text:'台灣數位廣告市場規模約 NT$680 億，年成長率 8%。',risk:false},
+     {text:'社群廣告占比 38%、搜尋 29%、影音 21%。',risk:false},
+     {text:'Meta 台灣社群廣告份額約 62%，Google 搜尋約 94%。',risk:false},
+     {text:'TikTok 廣告市場滲透率 2023 年突破 15%，是成長最快平台。',risk:true},
+     {text:'程序化購買廣告台灣採用率 73%，高於亞太平均 65%。',risk:true}
+   ],
+   explanation:'<strong>句 ④</strong>：TikTok「市場滲透率 15%」——這個數字很難找到公開來源，且「市場滲透率」定義模糊，AI 可能捏造了一個看似合理的數字。<br><br><strong>句 ⑤</strong>：程序化廣告採用率這類細緻數據，通常只有付費研究報告才有，AI 免費給你精確數字，可信度低。',
+   tip:'本地市場的細分數據是 AI 幻覺的高發地帶，因為真實資料稀少，AI 更容易「填補空白」。'},
+
+  {id:13,diff:'normal',pts:2,theme:'prod',type:'compare',
+   stem:'你請 AI 協助說明新功能「AI 自動分類標籤」的技術原理：',
+   question:'哪個回應比較好？',
+   optionA:{label:'AI 回應 A',text:'本功能採用 BERT 架構，在 50 萬筆台灣電商資料上微調，分類準確率達 94.7%，支援 28 種標籤，平均處理時間每筆 0.12 秒，模型每季更新。'},
+   optionB:{label:'AI 回應 B',text:'要準確說明技術原理，我需要技術團隊的規格文件，包括：模型架構、訓練資料規模、準確率指標、標籤數量等。這些應由工程師確認後，我再幫你轉化為行銷語言，確保對外說明的正確性。'},
+   correct:'B',
+   explanation:'A 捏造了一整套技術規格（BERT 架構、50 萬筆、94.7% 準確率），這些數字完全是虛構的。若寫進產品白皮書，客戶驗證後發現不符，信任危機難以挽回。<br><br>B 正確拒絕捏造，提出正確工作流程：先取得工程師確認的規格，再協助轉化為行銷語言。',
+   tip:'凡是技術數字（準確率、速度、容量），必須從工程師或 PM 取得，不接受 AI 自行填寫。'},
+
+  {id:14,diff:'normal',pts:2,theme:'hr',type:'detect',
+   stem:'你請 AI 說明台灣職場性騷擾防治相關規定：',
+   aiQuote:'根據性別工作平等法第 13 條，僱用 30 人以上雇主應訂定性騷擾防治措施。另依職場霸凌防治法第 5 條，公司需設置申訴專線。受害者可向地方主管機關申訴，申訴時效為事件發生後 1 年內。',
+   question:'這段回應中，哪個說法最有問題？',
+   options:[
+     {text:'僱用 30 人以上才需訂定防治措施',correct:false},
+     {text:'申訴時效為 1 年內',correct:false},
+     {text:'引用了「職場霸凌防治法第 5 條」',correct:true},
+     {text:'受害者可向地方主管機關申訴',correct:false}
+   ],
+   explanation:'「職場霸凌防治法」在台灣<strong>並不存在</strong>——這是典型的幻覺法條。AI 捏造了一個聽起來合理的法律名稱。台灣目前沒有獨立的職場霸凌防治法，相關規範散見於勞基法、性別工作平等法等。',
+   tip:'查核原則：法律名稱和法條編號，直接上全國法規資料庫（law.moj.gov.tw）搜尋。搜不到的法律，就是幻覺。'},
+
+  {id:15,diff:'normal',pts:2,theme:'prod',type:'detect',
+   stem:'行銷部在準備產品競品比較頁面，AI 草稿說：',
+   aiQuote:'根據公開基準測試，我們的產品資料處理速度比競品 A 快 35%，每秒可處理 15,000 筆，而競品 A 約 11,000 筆。在大資料量場景，我們的完成時間約為競品的 62%。',
+   question:'這段文案的最大問題是什麼？',
+   options:[
+     {text:'應該附上測試環境說明',correct:false},
+     {text:'AI 沒有你的系統和競品的實測數據，這些比較數字是捏造的',correct:true},
+     {text:'百分比的表達方式容易讓人混淆',correct:false},
+     {text:'競品名稱用 A 代替不夠具體',correct:false}
+   ],
+   explanation:'AI 沒有你們系統和競品的存取權，根本沒辦法做基準測試。「公開基準測試」這個說法是 AI 捏造的來源。這種<strong>看起來有根據的假數字</strong>若出現在行銷材料中，是非常嚴重的不實廣告。',
+   tip:'與競品的任何比較性陳述都需要真實數據，且數據取得方式需要可被驗證。'},
+
+  {id:16,diff:'normal',pts:2,theme:'mkt',type:'detect',
+   stem:'你讓 AI 寫一段電商平台市場分析：',
+   aiQuote:'蝦皮購物在台灣電商市占率為 41%，PChome 為 28%，Momo 為 19%，其他合計 12%。蝦皮 2024 年在台灣年 GMV 約 NT$3,200 億。PChome 受競爭壓力，預計 2025 年將跌破 25%。',
+   question:'哪個說法風險最高？',
+   options:[
+     {text:'蝦皮市占率 41%',correct:false},
+     {text:'蝦皮年 GMV NT$3,200 億',correct:false},
+     {text:'「PChome 預計 2025 年將跌破 25%」',correct:true},
+     {text:'各平台數字加總等於 100%',correct:false}
+   ],
+   explanation:'「預計 2025 年將跌破 25%」是 AI 自行做出的<strong>預測性陳述</strong>——它沒有預測市場的依據，這是根據趨勢「合理推斷」後捏造的數字。若出現在對外報告中，可能被視為對競爭對手的不實陳述，甚至引發法律問題。',
+   tip:'AI 做出的「預計」、「預期」、「將會」——若你沒有提供任何分析基礎，那些預測都是捏造的。'},
+
+  {id:17,diff:'normal',pts:2,theme:'hr',type:'compare',
+   stem:'行銷主管想了解員工可累積多少未休特休：',
+   question:'哪個回應的品質比較好？',
+   optionA:{label:'AI 回應 A',text:'依勞基法，特別休假年度終結未休完，雇主應折算工資發給。關於遞延，最多可累積 2 年，超過即失效。'},
+   optionB:{label:'AI 回應 B',text:'依勞基法第 38 條，年度終結未休完的特休，雇主原則上應折算工資發給。遞延的細節規定較複雜，且修法後有更動，建議查勞動部最新說明或洽詢勞工局確認。'},
+   correct:'B',
+   explanation:'A 說「最多累積 2 年」——這個說法過於簡化，並非勞基法原文規定，屬於 AI 自行推論可能造成誤導。B 提供了法條依據，對遞延規定的複雜性保持誠實，建議查最新規定。',
+   tip:'AI 給的「上限」、「最多」、「最少」這類邊界數字，是幻覺出現頻率最高的地方。'},
+
+  {id:18,diff:'normal',pts:2,theme:'prod',type:'dissect',
+   stem:'行銷同事請 AI 起草功能更新公告（未基於 release notes）：',
+   aiQuote:'① 報表載入速度提升 40%，有效縮短等待時間。② 新增批次匯入，支援 Excel、CSV、JSON，單次上限 10,000 筆。③ API 呼叫限制從每分鐘 100 次提升至 200 次。④ 修復 Safari 瀏覽器相容性問題，支援 Safari 15 以上。⑤ 新增 SSO 整合，支援 SAML 2.0 與 OAuth 2.0。',
+   question:'若這段公告是 AI 自行生成而非基於 release notes，哪些句子風險最高？',
+   sentences:[
+     {text:'報表載入速度提升 40%。',risk:true},
+     {text:'批次匯入支援三種格式，單次上限 10,000 筆。',risk:true},
+     {text:'API 限制從 100 次提升至 200 次。',risk:true},
+     {text:'修復 Safari 相容性問題，支援 Safari 15 以上。',risk:false},
+     {text:'新增 SSO 整合，支援 SAML 2.0 與 OAuth 2.0。',risk:true}
+   ],
+   explanation:'句 ①②③⑤ 都包含<strong>具體的技術指標</strong>（40%、10,000 筆、200 次/分、SAML 2.0）。若這些數字是 AI 捏造的，將直接出現在對外公告中，客戶依此設計整合方案後發現不符，信任危機難以挽回。句 ④ 相對模糊，風險略低。',
+   tip:'產品功能公告必須 100% 基於工程師的 release notes，行銷部的角色是「潤稿與傳達」而非「生成」。'},
+
+  {id:19,diff:'normal',pts:2,theme:'mkt',type:'compare',
+   stem:'你需要了解台灣消費者對「永續品牌」的態度：',
+   question:'哪個回應品質比較高？',
+   optionA:{label:'AI 回應 A',text:'根據 2024 年調查，台灣有 68% 的消費者願意為永續品牌支付溢價，平均溢價接受度 12-18%。千禧世代有 81% 表示品牌環境友善程度影響其購買決策。'},
+   optionB:{label:'AI 回應 B',text:'台灣消費者對永續品牌的態度有多面向。根據台灣趨勢研究的調查，有一定比例消費者表示永續因素影響購買意願，但「說」和「做」之間仍有落差。建議參考主計處家庭收支調查，或各產業公會的研究報告。'},
+   correct:'B',
+   explanation:'A 給了非常精確的數字（68%、12-18%、81%）卻沒說是誰做的調查，「2024 年調查」太模糊。<br><br>B 引用了具體研究機構，點出「說與做的差距」這個重要面向，並建議了真實可查的來源，同時提出客製化分析的可能。',
+   tip:'要求 AI 說清楚來源機構和年份，不接受「根據調查」或「研究顯示」這類模糊歸因。'},
+
+  {id:20,diff:'normal',pts:2,theme:'hr',type:'detect',
+   stem:'你請 AI 說明 2024 年台灣基本工資的相關資訊：',
+   aiQuote:'2024 年台灣基本工資自 1 月 1 日起調整，月薪最低為 NT$26,400，時薪最低為 NT$176。相較 2023 年的 NT$26,400 月薪，本次調幅為 3.5%，是近五年調幅最高的一次。',
+   question:'這段回應中哪裡最需要查核？',
+   options:[
+     {text:'2024 年月薪基本工資金額',correct:false},
+     {text:'調整生效日期（1 月 1 日）',correct:false},
+     {text:'「相較 2023 年 NT$26,400，調幅 3.5%」的邏輯',correct:true},
+     {text:'時薪最低為 NT$176',correct:false}
+   ],
+   explanation:'若 2023 年月薪也是 NT$26,400，那 2024 年調幅應是 0%，而非 3.5%——這個說法<strong>自相矛盾</strong>。AI 混淆了年份數字。這類「自我矛盾」的錯誤其實肉眼就能發現，關鍵在於有沒有習慣性地檢查數字的內部一致性。',
+   tip:'快速檢查法：AI 給的數字，試著自己做一遍算術。若算出來的結果與 AI 的結論不符，代表有問題。'},
+
+  // ══ 困難 (4分) × 7 ══
+  {id:21,diff:'hard',pts:4,theme:'hr',type:'dissect',
+   stem:'人資請 AI 協助說明職業災害補償規定：',
+   aiQuote:'① 勞工因職業災害死亡者，雇主應給予 5 年工資的喪葬費及死亡補償。② 職業災害補償與勞工保險給付可同時領取，不互相抵充。③ 雇主投保勞工保險後，由勞保局全額給付，雇主無需另行補償。④ 遭受職業災害的勞工，雇主不得以無法勝任工作為由解雇。⑤ 職業病認定需由勞工提出申請，主管機關在 30 個工作日內完成審查。',
+   question:'哪些句子有明顯錯誤？',
+   sentences:[
+     {text:'勞工死亡者，雇主應給予 5 年工資的補償。',risk:true},
+     {text:'職業災害補償與勞工保險給付可同時領取，不互相抵充。',risk:true},
+     {text:'雇主投保勞工保險後，由勞保局全額給付，雇主無需另行補償。',risk:true},
+     {text:'遭受職業災害的勞工，雇主不得以無法勝任工作為由解雇。',risk:false},
+     {text:'職業病認定，主管機關在 30 個工作日內完成審查。',risk:true}
+   ],
+   explanation:'<strong>句 ①</strong>：喪葬費和死亡補償分開計算，並非「5 年工資」一句帶過，AI 過度簡化。<br><br><strong>句 ②</strong>：勞基法明定勞保給付可<strong>抵充</strong>雇主補償責任，並非「不抵充」。<br><br><strong>句 ③</strong>：嚴重錯誤——雇主有勞基法上的職災補償責任，勞保給付只是抵充，不是免除雇主責任。<br><br><strong>句 ⑤</strong>：「30 個工作日」來源不明，可能是幻覺數字。',
+   tip:'財務與法律責任的數字，若被行銷部用去對外宣傳（如福利說明），可能引發法律糾紛，必須 100% 確認。'},
+
+  {id:22,diff:'hard',pts:4,theme:'prod',type:'dissect',
+   stem:'行銷部撰寫產品白皮書的「隱私與資安」章節，AI 草稿：',
+   aiQuote:'① 本產品符合 ISO 27001、SOC 2 Type II、以及台灣個資法的所有要求。② 所有用戶資料採 AES-256 加密儲存，傳輸過程使用 TLS 1.3 協定保護。③ 資料主機位於台灣境內，不跨境傳輸。④ 發生資料洩露時，本公司承諾 24 小時內通知受影響用戶，72 小時內完成初步調查報告。⑤ 用戶可隨時申請資料刪除，系統將在 7 個工作天內完成並出具證明。',
+   question:'哪些句子若未經法遵確認就對外發布，風險最高？',
+   sentences:[
+     {text:'符合 ISO 27001、SOC 2 Type II、個資法所有要求。',risk:true},
+     {text:'採 AES-256 加密儲存，傳輸使用 TLS 1.3。',risk:true},
+     {text:'資料主機位於台灣境內，不跨境傳輸。',risk:true},
+     {text:'資料洩露後 24 小時通知用戶，72 小時完成調查。',risk:true},
+     {text:'資料刪除申請後 7 個工作天內完成並出具證明。',risk:true}
+   ],
+   explanation:'五句全部高風險，因為它們都構成對客戶的<strong>具體承諾或合規聲明</strong>：<br>• 句①若未取得認證，是嚴重不實陳述<br>• 句②③若技術實作不符，是欺騙客戶<br>• 句④⑤承諾了具體時效，等同法律義務<br><br>白皮書中的資安與隱私聲明，每一個字都要法務和工程師共同確認。',
+   tip:'資安、隱私、合規相關文案，是行銷部風險最高的創作領域。任何對外聲明都等同合約承諾。'},
+
+  {id:23,diff:'hard',pts:4,theme:'mkt',type:'dissect',
+   stem:'行銷主管請 AI 起草一份市場機會分析：',
+   aiQuote:'① 台灣 B2B SaaS 市場 2024 年預計達 NT$580 億，CAGR 19.3%。② 目前市場滲透率僅 18%，相較美國 67% 有大幅成長空間。③ 中小企業採購金額 2023 年年增 34%。④ 根據本公司過去三年銷售數據，客戶平均回購率 76%，NPS 分數 52 分。⑤ 最佳切入時間窗口為 2025 年 Q2，競品將面臨合約到期潮。',
+   question:'哪些句子是 AI 不可能有根據說出的？',
+   sentences:[
+     {text:'B2B SaaS 市場 2024 年預計達 NT$580 億，CAGR 19.3%。',risk:false},
+     {text:'台灣市場滲透率 18%，美國 67%，仍有成長空間。',risk:false},
+     {text:'中小企業採購金額 2023 年年增 34%。',risk:true},
+     {text:'根據本公司銷售數據，客戶回購率 76%，NPS 52 分。',risk:true},
+     {text:'最佳切入時間窗口 2025 年 Q2，競品面臨合約到期潮。',risk:true}
+   ],
+   explanation:'<strong>句③</strong>：台灣中小企業採購細分數據難有公開來源，極可能是幻覺。<br><br><strong>句④</strong>：「本公司的銷售數據」——AI 根本沒有看過你公司的資料，這是 AI 用「本公司」三個字讓你誤以為是真實數字。<strong>最危險的幻覺類型。</strong><br><br><strong>句⑤</strong>：「競品 2025 Q2 面臨合約到期潮」——AI 沒有這個情報，是幻覺性預測。',
+   tip:'最危險的幻覺：AI 假設它知道你公司的內部數據。你沒有提供的資訊，AI 就不可能知道。'},
+
+  {id:24,diff:'hard',pts:4,theme:'hr',type:'detect',
+   stem:'公司要修訂遠距工作政策，請 AI 草擬員工說明：',
+   aiQuote:'依勞動部 2022 年發布的遠距工作指引，雇主應提供遠距勞工必要的設備與網路費用補助。遠距工作期間的職業災害認定，與在辦公室相同標準。雇主可單方面決定員工轉為永久遠距，無需員工同意。',
+   question:'這段說明中哪個說法法律風險最高？',
+   options:[
+     {text:'雇主應提供設備與網路費用補助',correct:false},
+     {text:'職業災害認定與在辦公室相同標準',correct:false},
+     {text:'雇主可單方面決定永久遠距，無需員工同意',correct:true},
+     {text:'引用了勞動部 2022 年遠距工作指引',correct:false}
+   ],
+   explanation:'工作地點屬於<strong>勞動條件</strong>，單方面變更需依法定程序，不能「無需員工同意」。這個說法若放進員工手冊或公告，可能直接違反勞基法的勞動契約變更規定。<br><br>（句①的「勞動部 2022 年指引要求設備補助」也可能是幻覺，但句③的法律風險更立即且嚴重。）',
+   tip:'任何涉及「雇主單方面可以做什麼」的說法，都需要勞基法的明確授權，不能依賴 AI 的陳述。'},
+
+  {id:25,diff:'hard',pts:4,theme:'prod',type:'detect',
+   stem:'行銷總監看完 AI 生成的產品介紹後說「沒問題，可以對外發布」。這份介紹包含詳細功能清單、效能數字、認證列表、競品比較表格。',
+   aiQuote:'〔AI 生成的產品介紹，包含功能清單、效能數字、客戶引言、認證清單、競品比較〕',
+   question:'你的正確反應是？',
+   options:[
+     {text:'總監說可以就可以，AI 生成的內容通常沒問題',correct:false},
+     {text:'文件寫得流暢≠內容正確，功能、數字、認證、競品比較都需各部門確認',correct:true},
+     {text:'只要確認客戶引言是真實的，其他 AI 生成的應該沒問題',correct:false},
+     {text:'先發布，有問題再修改',correct:false}
+   ],
+   explanation:'「寫得很好」描述的是<strong>語言品質</strong>，不是<strong>內容正確性</strong>。這正是 AI 幻覺最危險的特質——讓錯誤的資訊聽起來非常流暢、專業。<br><br>一份 AI 生成的產品介紹，至少需要四個部門確認：PM（功能清單）、工程（效能數字）、法遵（認證與競品比較）、客戶成功（案例授權）。',
+   tip:'核心觀念：「用 AI 寫」和「內容正確」是兩件完全獨立的事。'},
+
+  {id:26,diff:'hard',pts:4,theme:'mkt',type:'dissect',
+   stem:'行銷部撰寫年度報告，請 AI 整理市場趨勢分析段落：',
+   aiQuote:'① 根據 Gartner 2023 年預測，全球行銷科技支出 2025 年將超過 1,000 億美元。② 台灣中小企業行銷科技支出，平均每年投入 NT$280 萬，較三年前成長 47%。③ 依據 HubSpot 年度行銷報告，使用 AI 工具的行銷團隊，潛在客戶轉換率平均高出 23%。④ 社群媒體廣告 ROAS 在台灣市場平均為 3.8 倍，以 Facebook 廣告表現最佳。⑤ 根據尼爾森 2024 年第二季報告，消費者對品牌內容的信任度年增 12%。',
+   question:'哪些數據需要特別謹慎？',
+   sentences:[
+     {text:'Gartner 2023 年預測，全球行銷科技支出 2025 年超過 1,000 億美元。',risk:false},
+     {text:'台灣中小企業行銷科技支出平均 NT$280 萬，年增 47%。',risk:true},
+     {text:'HubSpot 報告：使用 AI 的行銷團隊，轉換率高出 23%。',risk:false},
+     {text:'台灣社群廣告 ROAS 平均 3.8 倍，Facebook 表現最佳。',risk:true},
+     {text:'尼爾森 2024 年 Q2 報告：品牌內容信任度年增 12%。',risk:true}
+   ],
+   explanation:'<strong>句②</strong>：「台灣中小企業行銷科技支出 NT$280 萬、年增 47%」——本地細分數據很難找到公開來源，極可能是 AI 捏造。<br><br><strong>句④</strong>：「台灣 ROAS 平均 3.8 倍」——ROAS 因產業、受眾、出價差異極大，「市場平均」概念本身就可疑。<br><br><strong>句⑤</strong>：「尼爾森 2024 Q2 報告」——需查核是否真實存在，AI 可能捏造了具體出處。',
+   tip:'可以接受的做法：用這些數字作為「研究方向」，然後去找真實報告（IAB Taiwan、動腦雜誌）驗證後再使用。'},
+
+  {id:27,diff:'hard',pts:4,theme:'prod',type:'dissect',
+   stem:'行銷同事請 AI 撰寫給企業客戶 IT 部門的系統需求說明：',
+   aiQuote:'① 作業系統支援 Windows 10/11、macOS 12 以上、Ubuntu 20.04+。② 瀏覽器相容性：Chrome 90+、Firefox 88+、Edge 90+、Safari 14+，不支援 IE。③ 網路要求：建議頻寬 10Mbps，延遲低於 100ms；需開放 port 80、443、8080、8443。④ 使用 PostgreSQL 14，支援最多 500 個並發連線，儲存空間 50GB 至 1TB。⑤ Single Tenant 部署選項可申請，部署時間約 2 週。',
+   question:'哪些句子的內容若不正確，風險最高？',
+   sentences:[
+     {text:'支援 Windows 10/11、macOS 12、Ubuntu 20.04+。',risk:false},
+     {text:'Chrome 90+、Firefox 88+、Edge 90+、Safari 14+，不支援 IE。',risk:false},
+     {text:'需開放 port 80、443、8080、8443，建議頻寬 10Mbps。',risk:true},
+     {text:'使用 PostgreSQL 14，最多 500 個並發連線，儲存 50GB-1TB。',risk:true},
+     {text:'Single Tenant 部署可申請，部署時間約 2 週。',risk:true}
+   ],
+   explanation:'<strong>句③</strong>：需要開放的 port 若不正確，IT 部門開放錯誤 port，可能造成安全漏洞或系統無法連線。<br><br><strong>句④</strong>：資料庫版本、並發連線數、儲存空間——任何一個數字錯了都可能讓客戶 IT 規劃失準。<br><br><strong>句⑤</strong>：「2 週」是 AI 捏造的承諾時間，若工程團隊實際需要 6 週，直接造成合約糾紛。',
+   tip:'給 IT 部門的技術文件每一個數字都必須由工程師確認，行銷部不可以自行填寫，更不能用 AI 生成。'},
+
+  // ══ 地獄 (5分) × 3 ══
+  {id:28,diff:'hell',pts:5,theme:'hr',type:'dissect',
+   stem:'人資請 AI 起草員工手冊中的加班費說明，以下為 AI 完整草稿：',
+   aiQuote:'① 依勞基法，每日正常工時不得超過 8 小時，每週不得超過 40 小時。② 延長工時第 1-2 小時，按平日每小時工資加給三分之一以上。③ 延長工時超過 2 小時後，每小時加給三分之二以上。④ 休息日出勤全日均按 2 倍計算加班費。⑤ 國定假日出勤則依各公司規定辦理，法律無強制要求。',
+   question:'哪些句子有法規錯誤或過度簡化的風險？',
+   sentences:[
+     {text:'每日正常工時不得超過 8 小時，每週不得超過 40 小時。',risk:false},
+     {text:'延長工時第 1-2 小時，加給三分之一以上。',risk:false},
+     {text:'延長工時超過 2 小時後，每小時加給三分之二以上。',risk:false},
+     {text:'休息日出勤全日均按 2 倍計算加班費。',risk:true},
+     {text:'國定假日出勤依各公司規定辦理，法律無強制要求。',risk:true}
+   ],
+   explanation:'<strong>句④</strong>：休息日加班費並非「全日 2 倍」，勞基法有分級計算（前 2 小時 1.34 倍、再 2 小時 1.67 倍），AI 過度簡化了。<br><br><strong>句⑤</strong>：國定假日出勤<strong>並非「法律無強制要求」</strong>——勞基法明定國定假日出勤應加倍給付工資。這個說法若放入員工手冊，公司可能面臨嚴重勞資糾紛。',
+   tip:'高風險情境：任何要放進正式文件（員工手冊、合約）的 AI 輸出，都必須請 HR 或法務確認，不能直接使用。'},
+
+  {id:29,diff:'hell',pts:5,theme:'prod',type:'dissect',
+   stem:'行銷部準備一份完整的產品市場定位白皮書，以下為 AI 草稿的核心段落：',
+   aiQuote:'① 本產品採用業界領先的 Transformer 架構，在 2 億筆中文語料上預訓練，中文理解能力達 GPT-4 等級。② 根據內部測試，我們的模型在台灣金融業文件分類任務上，F1 分數達 0.94，超越市面上所有競品。③ 產品已獲台灣 AI 實驗室認證，為 2024 年度最佳中文 NLP 工具獎得獎作品。④ 系統採用聯邦學習（Federated Learning）架構，確保客戶資料永不離開本地端。⑤ 截至 2024 年第三季，全台已有超過 500 家企業採用，客戶滿意度 NPS 達 72 分。',
+   question:'哪些句子是 AI 不可能有根據、且可能構成不實廣告的？',
+   sentences:[
+     {text:'採用 Transformer 架構，在 2 億筆中文語料上預訓練，中文理解達 GPT-4 等級。',risk:true},
+     {text:'內部測試 F1 分數 0.94，超越市面上所有競品。',risk:true},
+     {text:'已獲台灣 AI 實驗室認證，2024 年度最佳中文 NLP 工具獎。',risk:true},
+     {text:'採用聯邦學習架構，客戶資料永不離開本地端。',risk:true},
+     {text:'全台超過 500 家企業採用，客戶 NPS 達 72 分。',risk:true}
+   ],
+   explanation:'五句全部是高風險幻覺：<br>• 句①：AI 不知道你們模型的訓練細節，「GPT-4 等級」是未經驗證的聲稱<br>• 句②：「超越所有競品」是最高級陳述，需要公開可查核的基準測試<br>• 句③：「台灣 AI 實驗室認證」和「最佳獎」——這個獎項可能根本不存在<br>• 句④：技術架構的聲稱必須工程師確認，承諾「永不離開本地端」是法律義務<br>• 句⑤：「500 家企業」和「NPS 72 分」——AI 根本不知道你的客戶數和 NPS',
+   tip:'白皮書中的每一個聲稱，都可能被客戶或媒體拿來查核驗證。沒有依據的聲稱，在白皮書中的傷害遠大於在 Email 中。'},
+
+  {id:30,diff:'hell',pts:5,theme:'mkt',type:'dissect',
+   stem:'行銷主管看完 AI 生成的完整競品分析報告（含市占、財務、技術比較），決定直接提報給董事會。報告包含以下關鍵句子：',
+   aiQuote:'① 根據 IDC 2024 Q1 報告，台灣企業 SaaS 市場中，我司市占率為 18.5%，居業界第三。② 主要競品 A 公司 2023 年台灣營收約 NT$4.2 億，年增 18%，預計 2025 年將被我司超越。③ 競品 B 公司的 AI 功能存在嚴重的資料隱私漏洞，根據多位客戶反映已發生資料外洩事件。④ 我司客戶留存率 94% 高於業界平均 78%，顯示產品黏著度顯著優於競爭對手。⑤ 若董事會批准本季行銷預算增加 30%，預計市占率將在 12 個月內提升至 25%。',
+   question:'哪些句子若直接提報董事會，可能帶來法律或信譽風險？',
+   sentences:[
+     {text:'根據 IDC 2024 Q1 報告，我司市占率 18.5%，居業界第三。',risk:true},
+     {text:'競品 A 公司 2023 年台灣營收 NT$4.2 億，預計 2025 年被我司超越。',risk:true},
+     {text:'競品 B 公司 AI 功能存在嚴重資料隱私漏洞，已發生資料外洩事件。',risk:true},
+     {text:'我司客戶留存率 94% 高於業界平均 78%。',risk:true},
+     {text:'預算增加 30%，預計 12 個月內市占提升至 25%。',risk:true}
+   ],
+   explanation:'五句全部有嚴重風險：<br>• 句①：IDC 報告可能是幻覺引用，且市占數字需有依據<br>• 句②：競品非公開財務數字是 AI 捏造，「預計被超越」是未授權預測<br>• 句③：<strong>最危險</strong>——指控競品有資安漏洞和資料外洩，若無真實證據，可能構成<strong>誹謗或不實競爭</strong>，面臨法律訴訟<br>• 句④：客戶留存率和業界平均都需有可查核的來源<br>• 句⑤：行銷投資回報預測需有分析基礎，否則是對董事會的誤導性陳述',
+   tip:'【終極提醒】董事會報告中的任何數字和陳述都有法律效力。AI 生成的報告直接提報，是將公司置於法律風險之中——這是行銷主管最需要警覺的場景。'}
+];
+
+// ── ANIMALS CONFIG ──
+const ANIMALS = [
+  {range:'0–20', emoji:'🐢', name:'謹慎之龜', title:'謹慎之龜：寧可慢，不出錯',
+   desc:'你像烏龜一樣謹慎，遇到 AI 的說法不會輕易相信。雖然有時候辨識度還不夠敏銳，但「謹慎查核」這個心態正是行銷部最需要的起點。繼續練習，你會越來越快！'},
+  {range:'21–40', emoji:'🦊', name:'機靈之狐', title:'機靈之狐：直覺到位，還差一步',
+   desc:'你的直覺不錯，能抓住明顯的幻覺，但對於那些「說得像真的一樣」的精心偽裝，有時還會被迷惑。多累積查核習慣，這隻狐狸會越來越銳利！'},
+  {range:'41–60', emoji:'🐬', name:'敏捷之豚', title:'敏捷之豚：思維靈活，判斷穩健',
+   desc:'你像海豚一樣靈活，能在複雜的資訊中快速找到問題所在。對於大多數的 AI 幻覺你都能識破，只有最精緻的偽裝才能騙過你。'},
+  {range:'61–80', emoji:'🦁', name:'洞察獅王', title:'洞察獅王：統御全場的判讀力',
+   desc:'你是團隊的幻覺偵探！你的批判性思維已達到專業水準，能看穿大多數的 AI 捏造，並且知道哪些情境需要特別小心。這種能力，值得分享給整個行銷部。'},
+  {range:'81–100', emoji:'🦅', name:'透視之鷹', title:'透視之鷹：高空俯瞰，無所遁形',
+   desc:'你的 AI 識讀能力已達最高等級！從捏造法條、虛假數字到未授權預測，幾乎沒有幻覺能逃過你的法眼。你是行銷部的 AI 風險把關人，請把這份能力傳授給同事！'}
+];
+
+// ── STATE ──
+let shuffled = [], idx = 0, rawScore = 0, correctCount = 0, answered = false, selSents = new Set(), cmpSel = null;
+
+function startQuiz() {
+  shuffled = [...QUESTIONS].sort(() => Math.random() - 0.5);
+  idx = 0; rawScore = 0; correctCount = 0; answered = false;
+  document.getElementById('hdrProgress').style.display = 'flex';
+  document.getElementById('hdrScore').style.display = 'block';
+  showScreen('screen-quiz');
+  renderQ();
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function updateHdr() {
+  const pct = Math.round((idx / shuffled.length) * 100);
+  document.getElementById('hdrFill').style.width = pct + '%';
+  document.getElementById('hdrLabel').textContent = idx + '/' + shuffled.length;
+  document.getElementById('hdrScore').textContent = '得分 ' + rawScore;
+}
+
+function diffLabel(d) {
+  const m = {easy:'🌱 簡單',normal:'⚡ 普通',hard:'🔥 困難',hell:'💀 地獄'};
+  return m[d];
+}
+function diffClass(d) {
+  return 'diff-' + d;
+}
+function themeLabel(t) {
+  const m = {hr:'👔 HR 法規', mkt:'📊 市場數據', prod:'🛠 產品功能'};
+  return m[t];
+}
+
+function renderQ() {
+  answered = false; selSents.clear(); cmpSel = null;
+  const q = shuffled[idx];
+  const wrap = document.getElementById('quizWrap');
+  updateHdr();
+
+  let inner = '';
+
+  if (q.type === 'detect') {
+    inner = `<div class="q-body">
+      <span class="q-context-lbl">情境說明</span>
+      <div class="q-stem">${q.stem}</div>
+      ${q.aiQuote ? `<div class="ai-quote"><div class="ai-quote-lbl">AI 的回應</div><div class="ai-quote-text">${q.aiQuote}</div></div>` : ''}
+      <div class="q-question">${q.question}</div>
+    </div>
+    <div class="opts" id="optsWrap">
+      ${q.options.map((o,i)=>`<div class="opt" data-i="${i}" onclick="selOpt(${i})"><span class="opt-letter">${String.fromCharCode(65+i)}</span><span>${o.text}</span><span class="opt-result-icon" id="oi${i}"></span></div>`).join('')}
+    </div>
+    <div class="q-footer"><button class="btn-submit" id="submitBtn" disabled onclick="doDetect()">確認答案</button></div>`;
+  }
+
+  if (q.type === 'compare') {
+    inner = `<div class="q-body">
+      <span class="q-context-lbl">情境說明</span>
+      <div class="q-stem">${q.stem}</div>
+      <div class="q-question">${q.question}</div>
+    </div>
+    <div class="compare-grid" id="cmpWrap">
+      <div class="cmp" data-v="A" onclick="selCmp('A')"><div class="cmp-head"><span>${q.optionA.label}</span><span id="cmpIconA"></span></div><div class="cmp-body">${q.optionA.text}</div></div>
+      <div class="cmp" data-v="B" onclick="selCmp('B')"><div class="cmp-head"><span>${q.optionB.label}</span><span id="cmpIconB"></span></div><div class="cmp-body">${q.optionB.text}</div></div>
+    </div>
+    <div class="q-footer"><button class="btn-submit" id="submitBtn" disabled onclick="doCmp()">確認答案</button></div>`;
+  }
+
+  if (q.type === 'dissect') {
+    inner = `<div class="q-body">
+      <span class="q-context-lbl">情境說明</span>
+      <div class="q-stem">${q.stem}</div>
+      ${q.aiQuote ? `<div class="ai-quote"><div class="ai-quote-lbl">AI 草稿（逐句標記）</div><div class="ai-quote-text">${q.aiQuote}</div></div>` : ''}
+      <div class="q-question">${q.question}</div>
+    </div>
+    <div class="sents" id="sentsWrap">
+      ${q.sentences.map((s,i)=>`<div class="sent" data-i="${i}" onclick="togSent(${i})"><span class="sent-num">${i+1}</span><span style="flex:1">${s.text}</span><span class="sent-icon" id="si${i}"></span></div>`).join('')}
+    </div>
+    <div class="q-footer"><button class="btn-submit" id="submitBtn" onclick="doDissect()">確認答案</button></div>`;
+  }
+
+  wrap.innerHTML = `
+    <div class="q-meta-row">
+      <span class="diff-badge ${diffClass(q.diff)}">${diffLabel(q.diff)} · ${q.pts}分</span>
+      <span class="theme-badge">${themeLabel(q.theme)}</span>
+      <span class="q-counter">第 ${idx+1} / ${shuffled.length} 題</span>
+    </div>
+    <div class="q-card">${inner}</div>
+    <div id="expZone"></div>`;
+}
+
+function selOpt(i) {
+  if (answered) return;
+  document.querySelectorAll('.opt').forEach((el,j) => el.classList.toggle('sel', j===i));
+  document.getElementById('submitBtn').disabled = false;
+}
+
+function selCmp(v) {
+  if (answered) return;
+  cmpSel = v;
+  document.querySelectorAll('.cmp').forEach(el => el.classList.toggle('sel', el.dataset.v===v));
+  document.getElementById('submitBtn').disabled = false;
+}
+
+function togSent(i) {
+  if (answered) return;
+  const el = document.querySelector(`.sent[data-i="${i}"]`);
+  if (selSents.has(i)) { selSents.delete(i); el.classList.remove('sel'); }
+  else { selSents.add(i); el.classList.add('sel'); }
+}
+
+function doDetect() {
+  if (answered) return; answered = true;
+  const q = shuffled[idx]; let ok = false;
+  document.querySelectorAll('.opt').forEach((el,i) => {
+    el.classList.add('locked'); el.onclick = null;
+    const icon = document.getElementById('oi'+i);
+    if (el.classList.contains('sel')) {
+      if (q.options[i].correct) { el.classList.add('correct'); icon.textContent='✓'; ok=true; }
+      else { el.classList.add('wrong'); icon.textContent='✗'; }
+    } else if (q.options[i].correct) { el.classList.add('show'); icon.textContent='✓'; }
+  });
+  if (ok) { rawScore += q.pts; correctCount++; }
+  showExp(ok ? 'correct' : 'wrong', q, ok ? q.pts : 0);
+}
+
+function doCmp() {
+  if (answered || !cmpSel) return; answered = true;
+  const q = shuffled[idx]; const ok = cmpSel === q.correct;
+  document.querySelectorAll('.cmp').forEach(el => {
+    el.classList.add('locked'); el.onclick = null;
+    const isCorrect = el.dataset.v === q.correct;
+    const isSel = el.dataset.v === cmpSel;
+    if (isSel && ok) el.classList.add('correct');
+    else if (isSel && !ok) el.classList.add('wrong');
+    else if (isCorrect) el.classList.add('show');
+    const iconId = 'cmpIcon' + el.dataset.v;
+    document.getElementById(iconId).textContent = isCorrect ? '✓' : (isSel && !ok ? '✗' : '');
+  });
+  if (ok) { rawScore += q.pts; correctCount++; }
+  showExp(ok ? 'correct' : 'wrong', q, ok ? q.pts : 0);
+}
+
+function doDissect() {
+  if (answered) return; answered = true;
+  const q = shuffled[idx];
+  const riskIdxs = new Set(q.sentences.map((s,i)=>s.risk?i:-1).filter(i=>i>=0));
+  let allRight = true; let anyRight = false;
+  q.sentences.forEach((s,i) => {
+    const el = document.querySelector(`.sent[data-i="${i}"]`);
+    el.classList.add('locked'); el.onclick = null; el.classList.remove('sel');
+    const icon = document.getElementById('si'+i);
+    if (s.risk && selSents.has(i)) { el.classList.add('correct'); icon.textContent='⚠'; anyRight=true; }
+    else if (s.risk && !selSents.has(i)) { el.classList.add('missed'); icon.textContent='⚠'; allRight=false; }
+    else if (!s.risk && selSents.has(i)) { el.classList.add('wrong'); icon.textContent='✗'; allRight=false; }
+    else { el.classList.add('safe'); }
+  });
+  const result = allRight ? 'correct' : anyRight ? 'partial' : 'wrong';
+  const pts = allRight ? q.pts : anyRight ? Math.round(q.pts/2) : 0;
+  rawScore += pts; if (allRight) correctCount++;
+  showExp(result, q, pts);
+}
+
+function showExp(result, q, ptsEarned) {
+  document.getElementById('submitBtn').style.display = 'none';
+  updateHdr();
+  const isLast = idx >= shuffled.length - 1;
+  const cfg = {
+    correct: {cls:'exp-correct', emoji:'🎉', title:'答對了！'},
+    partial: {cls:'exp-partial', emoji:'💡', title:'部分正確'},
+    wrong:   {cls:'exp-wrong',   emoji:'😅', title:'答錯了，但這就是學習！'}
+  };
+  const c = cfg[result];
+  document.getElementById('expZone').innerHTML = `
+    <div class="exp-card ${c.cls}">
+      <div class="exp-header">
+        <span class="exp-emoji">${c.emoji}</span>
+        <span class="exp-title">${c.title}</span>
+        <span class="exp-pts">+${ptsEarned} 分</span>
+      </div>
+      <div class="exp-body">${q.explanation}</div>
+      ${q.tip?`<div class="exp-tip"><strong>實戰提醒</strong>：${q.tip}</div>`:''}
+    </div>
+    <button class="btn-next" onclick="${isLast?'showResult()':'nextQ()'}">${isLast?'查看我的動物結果 🐾':'下一題 →'}</button>`;
+}
+
+function nextQ() { idx++; renderQ(); window.scrollTo(0,0); }
+
+const MAX_SCORE = 73;
+function showResult() {
+  const pct = Math.round((rawScore / MAX_SCORE) * 100);
+  const lvIdx = pct<=20?0:pct<=40?1:pct<=60?2:pct<=80?3:4;
+  const animal = ANIMALS[lvIdx];
+
+  document.getElementById('rAnimalEmoji').textContent = animal.emoji;
+  document.getElementById('rAnimalName').textContent = animal.title;
+  document.getElementById('rAnimalDesc').textContent = animal.desc;
+  document.getElementById('rCorrect').textContent = correctCount;
+  document.getElementById('rRawScore').textContent = rawScore + '/' + MAX_SCORE;
+  document.getElementById('rRate').textContent = Math.round((correctCount/shuffled.length)*100) + '%';
+
+  document.getElementById('hdrProgress').style.display = 'none';
+  showScreen('screen-result');
+
+  // animate score
+  let cur = 0;
+  const target = pct;
+  const tick = () => {
+    if (cur < target) { cur = Math.min(cur+2, target); document.getElementById('rScoreDisplay').textContent = cur; document.getElementById('rBar').style.width = cur + '%'; requestAnimationFrame(tick); }
+  };
+  requestAnimationFrame(tick);
+
+  // highlight level
+  for (let i=0;i<5;i++) { document.getElementById('lv'+i).classList.toggle('active', i===lvIdx); }
+}
+
+function restartQuiz() { showScreen('screen-intro'); }
+</script>
+</body>
+</html>
